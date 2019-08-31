@@ -1,0 +1,25 @@
+{
+    "name": "mikebamber/bankstats",
+    "description": "a way to report on your spending",
+    "authors": [
+        {
+            "name": "mikebamber",
+            "email": "mikebamber@live.com"
+        }
+    ],
+
+    "repositories": [
+        {"type": "composer", "url": "https://repo.packagist.com/procureplus/"},
+        {"packagist.org": false}
+    ],
+
+    "require": {
+        "FabricDigital/PPCore": "^1.23"
+    },
+    "autoload":{
+	"psr-4":{
+		"BankStats\\":"src/"
+	}
+    }
+
+}
