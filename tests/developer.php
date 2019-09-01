@@ -10,11 +10,13 @@ use FileAdapter\Adapters\Local;
 
 use BankStats\Entities\TagEntity;
 use BankStats\Entities\ReferenceEntity;
+use BankStats\Entities\ReferenceToTagEntity;
 use BankStats\Entities\TransactionEntity;
 
 
 $tag = new TagEntity(array('name'=>'fuel'));
 $ref = new ReferenceEntity(array('who'=>'asda','name'=>'fuel'));
+$trans = new ReferenceToTagEntity(array('reference_id'=>1,'tag_id'=>3,));
 $trans = new TransactionEntity(array('reference_id'=>1,'amount'=>5.4,'date'=>'2018-09-02 00:00:00'));
 
 $data = array(
@@ -30,11 +32,14 @@ $ds = new CSVDataSource($config);
 $repoProvider = new RepositoryProvider('CSVDataSource',$config);
 $tagRepo = $repoProvider->get("BankStats\Repositories\TagRepository");
 $referenceRepo = $repoProvider->get("BankStats\Repositories\ReferenceRepository");
+$refToTagRepo = $repoProvider->get("BankStats\Repositories\ReferenceToTagRepository");
 $transactionRepo = $repoProvider->get("BankStats\Repositories\TransactionRepository");
 
 $rows = $tagRepo->getCount();
 var_dump($rows);
 $rows = $referenceRepo->getCount();
+var_dump($rows);
+$rows = $refToTagRepo->getCount();
 var_dump($rows);
 $rows = $transactionRepo->getCount();
 var_dump($rows);
