@@ -14,20 +14,47 @@ use BankStats\Entities\ReferenceToTagEntity;
 use BankStats\Entities\TransactionEntity;
 use BankStats\Helpers\RepoEnum;
 
-manageReferences();
+renderStartMenu();
 exit;
 
 
-#$rows = $ds->getMany();
+function renderStartMenu(){
+  global $flash;
+  system('clear');
+  render("--- BankStats ---");
+  
+  render("");
+  render($flash);$flash=null;
+  render("");
+  manageReferences();
+  
+}
+
+function editTags($reference){
+  $tags = implode(',',$reference->tags->pluck('name'));
+  render("Current tags: ".$tags);
+  $new = readline("What are the new tags ? :");
+  // csv explode
+  // look up ids
+  // add new TagLinks
+  // remove old ones
+  var_dump($new);
+}
 function manageReferences(){
   $rp = getRepoProvider(); 
   $referenceRepo = $rp->get(RepoEnum::Reference);
   // pull out all known references
-  $rows = $referenceRepo->with('tagLinks')->with('tags')->getMany();
+  $rows = $referenceRepo->keyByID()->with('tagLinks')->with('tags')->getMany();
   renderReferenceList($rows);
   
 }
 function renderReferenceList($rows){
+    
+    global $flash;
+    system('clear');
+    render("");
+    render($flash);$flash=null;
+    
     render("");
     render("--- References ---");
     foreach($rows as $row){
@@ -40,11 +67,13 @@ function renderReferenceList($rows){
     render("");
     $action = readline("action:");
     if(is_numeric($action)){
-        
+        editTags($rows->get($action));
     }else{
         
     }
-    render($action);
+    system('clear');
+    render("Action Success!");
+    manageReferences();
 }
 function getRepoProvider(){
      $data = array(
