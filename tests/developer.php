@@ -5,6 +5,7 @@ include __DIR__ ."/../vendor/autoload.php";
 
 use PPCore\Adapters\DataSources\CSVDataSource;
 use PPCore\Collections\Config;
+use PPCore\Collections\EntityCollection;
 use PPCore\RepositoryProvider;
 use FileAdapter\Adapters\Local;
 
@@ -14,7 +15,7 @@ use BankStats\Entities\ReferenceToTagEntity;
 use BankStats\Entities\TransactionEntity;
 use BankStats\Helpers\RepoEnum;
 
-renderStartMenu();
+debug();
 exit;
 
 
@@ -93,11 +94,43 @@ function render($text,$colour="white"){
 function debug(){
    
     $tag = new TagEntity(array('name'=>'fuel'));
-    $ref = new ReferenceEntity(array('who'=>'teso','name'=>'Tesco LTD'));
+    $ref = new ReferenceEntity(array('id'=>54,'who'=>'teso','name'=>'Tesco LTD'));
     $ref2tag = new ReferenceToTagEntity(array('reference_id'=>1,'tag_id'=>3,));
     $trans = new TransactionEntity(array('reference_id'=>1,'amount'=>5.4,'date'=>'2018-09-02 00:00:00'));
- 
     
+    $tags = new EntityCollection("BankStats\Entities\TagEntity");
+    $tags->push( new TagEntity(array('id'=>4,'name'=>'fuel')) );
+    $tags->push( new TagEntity(array('id'=>5,'name'=>'coffee')) );
+    $tags->push( new TagEntity(array('id'=>98,'name'=>'food')) );
+    $tags->push( new TagEntity(array('id'=>null,'name'=>'eating-out')) );
+  
+    $ref->tagLinks = new EntityCollection("BankStats\Entities\ReferenceToTagEntity");
+    $ref->tagLinks->push( new ReferenceToTagEntity(array('reference_id'=>54,'tag_id'=>3,'status'=>1,
+                                                         'tag'=>new TagEntity(array('id'=>3,'name'=>'bills')) )) );
+    $ref->tagLinks->push( new ReferenceToTagEntity(array('reference_id'=>54,'tag_id'=>5,'status'=>1,
+                                                        'tag'=>new TagEntity(array('id'=>5,'name'=>'coffee')))) );
+    $ref->tagLinks->push( new ReferenceToTagEntity(array('reference_id'=>54,'tag_id'=>8,'status'=>1,
+                                                        'tag'=>new TagEntity(array('id'=>8,'name'=>'pizza')))) );
+    $ref->tagLinks->push( new ReferenceToTagEntity(array('reference_id'=>54,'tag_id'=>98,'status'=>1,
+                                                        'tag'=>new TagEntity(array('id'=>98,'name'=>'food')))) );
+    #render("Links :". implode(',',$ref->tagLinks->pluck('tag')) );
+  foreach($ref->tagLinks as $link){
+    render($link->tag->id."-".$link->tag->name ."-".$link->status);
+  }
+    #render("Tags :". implode(',',$ref->tags->getManyBy('status',1)->pluck('id')) );
+    $ref->updateTags($tags);
+  render("--");
+  #print_r($ref->tagLinks); 
+   # render("Links :". implode(',',$ref->tagLinks->pluck('tag')->pluck('name')) );
+    #render("Tags :". implode(',',$ref->tags->getManyBy('status',1)->pluck('id')) );
+     foreach($ref->tagLinks as $link){
+    render($link->tag->id."-".$link->tag->name ."-".$link->status);
+  }
+  render("--");
+  
+   render('keep: fuel,coffee,food,eating-out. delete : pizza,bills');
+    
+    exit;
     $repoProvider = getRepoProvider();
     
     $tagRepo = $repoProvider->get("BankStats\Repositories\TagRepository");
