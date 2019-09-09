@@ -58,12 +58,14 @@ class ReferenceEntity extends RelationalEntity{
         $this->tagLinks->get($item->tag_id)->setStatus(0);
       }
     }
+    $this->tags->emptyOut();
     foreach($new_items as $item){
       // if tag is new or we dont already have it then add it
       if( !$item->id || $this->tagLinks->has($item->id)==false ){
           $link = new ReferenceToTagEntity();
           $link->tag = $item;
           $this->tagLinks->push($link);
+          $this->tags->push($item);
       }  
     }
     

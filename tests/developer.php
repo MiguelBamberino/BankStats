@@ -113,6 +113,8 @@ function debug(){
                                                         'tag'=>new TagEntity(array('id'=>8,'name'=>'pizza')))) );
     $ref->tagLinks->push( new ReferenceToTagEntity(array('reference_id'=>54,'tag_id'=>98,'status'=>1,
                                                         'tag'=>new TagEntity(array('id'=>98,'name'=>'food')))) );
+    $ref->tags = new EntityCollection("BankStats\Entities\TagEntity",$ref->tagLinks->pluck('tag'));
+    
     #render("Links :". implode(',',$ref->tagLinks->pluck('tag')) );
   foreach($ref->tagLinks as $link){
     render($link->tag->id."-".$link->tag->name ."-".$link->status);
