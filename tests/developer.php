@@ -15,7 +15,7 @@ use BankStats\Entities\ReferenceToTagEntity;
 use BankStats\Entities\TransactionEntity;
 use BankStats\Helpers\RepoEnum;
 
-debug();
+debug2();
 exit;
 
 
@@ -91,6 +91,13 @@ function getRepoProvider(){
 }
 function render($text,$colour="white"){
   echo $text."\n";
+}
+function debug2(){
+  
+  $data = array('session'=>'off');
+  $config = new Config($data);
+  PPServiceContainer()->init($config);
+  
 }
 function debug(){
    
