@@ -36,6 +36,7 @@ function editTags($reference){
   render("Current tags: ".$tags);
   $new = readline("What are the new tags ? :");
   // csv explode
+  $tags = explode(",",$new);
   // look up ids
   // add new TagLinks
   // remove old ones
