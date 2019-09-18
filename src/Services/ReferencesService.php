@@ -3,10 +3,12 @@
 namespace BankStats\Services;
 
 use PPCore\Services\BaseService;
+use PPCore\RepositoryProvider;
+use PPCore\UtilityProvider;
 
 use BankStats\Helpers\RepoEnum;
 
-class ReferencesServices extends BaseService{
+class ReferencesService extends BaseService{
   
     protected $reference_repo;
     protected $tag_repo;
@@ -23,6 +25,6 @@ class ReferencesServices extends BaseService{
     }
     
     public function getList(){
-      
+      return $this->reference_repo->keyByID()->with('tagLinks')->with('tags')->getMany();
     }
 }

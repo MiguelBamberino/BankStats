@@ -20,6 +20,7 @@ exit;
 
 
 function renderStartMenu(){
+  initContainer();
   global $flash;
   system('clear');
   render("--- BankStats ---");
@@ -43,29 +44,14 @@ function editTags($reference){
   var_dump($new);
 }
 function manageReferences(){
-  $rp = getRepoProvider(); 
-  $referenceRepo = $rp->get(RepoEnum::Reference);
-  // pull out all known references
-  $rows = $referenceRepo->keyByID()->with('tagLinks')->with('tags')->getMany();
-  renderReferenceList($rows);
+      
+  ClearAndFlash();
   
-}
-function renderReferenceList($rows){
-    
-    global $flash;
-    system('clear');
-    render("");
-    render($flash);$flash=null;
-    
-    render("");
-    render("--- References ---");
-    foreach($rows as $row){
-        $tags = implode(',',$row->tags->pluck('name'));        
-        $t = "[{$row->id}] {$row->name} - {$row->who} - tags({$tags})";
-        render($t);
-    }
-    render("------------------");
-    render("[b] back | [x] edit tags");
+  $service = PPServiceContainer()->get("BankStats\References");
+  $list = $service->getList();
+  renderReferenceList($list);
+  
+      render("[b] back | [x] edit tags");
     render("");
     $action = readline("action:");
     if(is_numeric($action)){
@@ -76,6 +62,25 @@ function renderReferenceList($rows){
     system('clear');
     render("Action Success!");
     manageReferences();
+  
+}
+function ClearAndFlash(){
+  global $flash;
+    system('clear');
+    render("");
+    render($flash);$flash=null;
+}
+function renderReferenceList($rows){
+    
+    render("");
+    render("--- References ---");
+    foreach($rows as $row){
+        $tags = implode(',',$row->tags->pluck('name'));        
+        $t = "[{$row->id}] {$row->name} - {$row->who} - tags({$tags})";
+        render($t);
+    }
+    render("------------------");
+
 }
 function getRepoProvider(){
      $data = array(
@@ -94,10 +99,26 @@ function render($text,$colour="white"){
 }
 function debug2(){
   
-  $data = array('session'=>'off');
+  initContainer();
+  $service = PPServiceContainer()->get("BankStats\References");
+  $list = $service->getList();
+  renderReferenceList($list);
+}
+function initContainer(){
+         $data = array(
+        'session'=>'off',
+         'dataSource'=>array(
+            'adapter'=>'CSVDataSource',
+            'starting_line'=>0,
+            'headings_to_lowercase'=>false,
+            'heading_spaces_to_underscore'=>false,
+            'file_adapter'=>new Local(__DIR__.'/../data/'),
+            'primary_key'=>'id',
+         )
+        
+    );
   $config = new Config($data);
   PPServiceContainer()->init($config);
-  
 }
 function debug(){
    
