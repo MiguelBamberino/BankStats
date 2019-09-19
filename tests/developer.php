@@ -15,7 +15,7 @@ use BankStats\Entities\ReferenceToTagEntity;
 use BankStats\Entities\TransactionEntity;
 use BankStats\Helpers\RepoEnum;
 
-debug2();
+renderStartMenu();
 exit;
 
 
@@ -55,7 +55,7 @@ function manageReferences(){
     render("");
     $action = readline("action:");
     if(is_numeric($action)){
-        editTags($rows->get($action));
+        editTags($list->get($action));
     }else{
         
     }
