@@ -27,4 +27,18 @@ class ReferencesService extends BaseService{
     public function getList(){
       return $this->reference_repo->keyByID()->with('tagLinks')->with('tags')->getMany();
     }
+  
+    public function updateTags(int $reference_id,array $tags){
+        
+        $reference = $this->reference_repo->with('tagLinks')->getOneById($reference_id);
+        // look up ids
+        $known_tags = $this->tag_repo->byNames($tags)->getMany();
+        $reference->updateTags($known_tags);
+        print_r($known_tags->pluck('name'));
+        // add new TagLinks
+        // remove old ones
+        var_dump($reference_id);
+        var_dump($tags);
+    }
+  
 }

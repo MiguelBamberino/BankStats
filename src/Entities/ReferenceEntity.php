@@ -39,7 +39,21 @@ class ReferenceEntity extends RelationalEntity{
     
       $this->updateHaveMtM($tags);
   }
-  public function updateHaveMtM(EntityCollection $new_items){
+  /**
+   * This function will update the links on this entity for a
+   * 'has and belongs to many' relationship. 
+   * It will :
+   * - remove links not in $new_items
+   * - keep links that still exist in $new_items
+   * - create new links for new items in $new_items
+   * 
+   * function can accept items in $new_items which don't have an id and therefore
+   * dont exist in persistence.
+   * 
+   * @param EntityCollection $new_items -> list of linked entities, not the linkerEntities 
+   * e.g. products<-habtm->tags . supply list of tags, not product_to_tags
+   */
+  protected function updateHaveMtM(EntityCollection $new_items){
     
       // check existing links have been populated
     if( $this->id && !($this->tagLinks instanceof EntityCollection) ){
@@ -58,6 +72,7 @@ class ReferenceEntity extends RelationalEntity{
         $this->tagLinks->get($item->tag_id)->setStatus(0);
       }
     }
+    // flush out tags that could exists here but will now be stale
     $this->tags->emptyOut();
     foreach($new_items as $item){
       // if tag is new or we dont already have it then add it
@@ -73,7 +88,7 @@ class ReferenceEntity extends RelationalEntity{
     public static function buildRelationshipRules(RelationshipRules $rules) {
         parent::buildRelationshipRules($rules);
         $rules->hasMany(  RepoEnum::ReferenceToTag ,'tagLinks','reference_id');
-		$rules->hasManyToMany(  RepoEnum::Tag ,'tags',RepoEnum::ReferenceToTag,'reference_id','tag');
+		    $rules->hasManyToMany(  RepoEnum::Tag ,'tags',RepoEnum::ReferenceToTag,'reference_id','tag');
 
     }
 

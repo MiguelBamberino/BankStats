@@ -9,8 +9,8 @@ class TagRepository extends RelationalRepository{
     protected $location = 'BankStats/tags';
     protected $defaultEntityClass = 'TagEntity';
     
-    public function getSearchList(){
-      $this->keyBy('tag');
-      return $this->getMany();
+    public function byNames(array $tags){
+      $this->whereIN('name',$tags);
+      return $this;
     }
 }

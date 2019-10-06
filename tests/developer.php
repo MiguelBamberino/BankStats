@@ -38,10 +38,10 @@ function editTags($reference){
   $new = readline("What are the new tags ? :");
   // csv explode
   $tags = explode(",",$new);
-  // look up ids
-  // add new TagLinks
-  // remove old ones
-  var_dump($new);
+  
+  $service = PPServiceContainer()->get("BankStats\References");
+  $response = $service->updateTags($reference->id,$tags);
+  exit('test-----');
 }
 function manageReferences(){
       
@@ -200,3 +200,5 @@ $ds = new CSVDataSource($config);
 $ds->setLocation('sample1');
 
 }
+
+
